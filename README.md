@@ -86,23 +86,22 @@ the Software Development workflow, import the bundle, register your fork with ru
 `node20` and test command `npm test`, and start a session on the *Plan, Implement, Review,
 Merge* flow.
 
-## What you should see
+## What the loop actually does
 
-Wren turns the agenda into work items — real records, not a list in a message — and hands
-each to Pike. Pike's container comes up, installs the harness, clones the branch, and then
-the agent *works*: `ls`, read the existing files, write `src/key-blocker.js`, run
-`npm test`, read the failure, fix it. A bounded summary of that comes back into the
-transcript in Pike's own voice — how many steps, which tools, what it concluded, what it
-cost — and the full detail is there for Pike to answer questions about on a later turn.
+`Lead Wren` turns the agenda into work items — real records, not a list in a message — and
+hands them to `Senior Developer Pike`. Pike's container comes up, installs the harness,
+clones the branch, and then the agent *works*: list the files, read what is there, write
+`src/key-blocker.js`, run `npm test`, read the failure, fix it. A bounded summary of that
+comes back into the transcript in Pike's own voice — how many steps, which tools, what it
+concluded, what it cost.
 
-Then Wren reviews the diff against what it asked for. If the work is short, the item goes
-back with comments and Pike reworks it in the same container. When it passes, the branch
-is pushed to your fork and a pull request is opened.
+Then Wren reviews the diff against what it asked for, and either approves it or sends it
+back with specifics, in which case Pike reworks it in the same container.
 
-The costs are metered: every model call the harness makes goes through Pyrrhula's own
-inference proxy, so it lands in `usage_record` under `purpose='delegation'` and your caps
-apply to it. No provider key ever enters the container — the agent gets a short-lived,
-scoped token that can only spend on the connection the persona was given.
+Every model call the harness makes goes through Pyrrhula's own inference proxy, so delegated
+spend is metered under `purpose='delegation'` and daily caps apply to it. No provider key
+ever enters the container: the agent gets a short-lived token scoped to the one connection
+its persona was given.
 
 ---
 
