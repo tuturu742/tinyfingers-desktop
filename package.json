@@ -4,7 +4,12 @@
   "private": true,
   "description": "A fullscreen smash toy for toddlers, as a desktop app.",
   "license": "MIT",
+  "main": "main.js",
   "scripts": {
+    "start": "electron .",
     "test": "node --test test/"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0"
   }
 }
