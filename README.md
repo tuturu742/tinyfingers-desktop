@@ -13,12 +13,15 @@ desktop shell can intercept them. Leaving requires a password, `parent` by defau
 ## This repository is an exercise
 
 **`main` is deliberately a scaffold.** A `package.json`, an empty `test/`, a licence and
-this file — no app. The working application lives in a **pull request**, built end to end
-by [Pyrrhula](https://github.com/tuturu742/pyrrhula)'s coding agents: a facilitator persona
-frames the work, a developer persona builds it inside a container through a coding harness,
-and a reviewer reads the diff against the task and approves or sends it back.
+this file — no app. The working application lives in **[pull request
+#5](https://github.com/tuturu742/tinyfingers-desktop/pull/5)**, built end to end by
+[Pyrrhula](https://github.com/tuturu742/pyrrhula)'s coding agents: a lead persona frames the
+work, a developer persona builds it inside a container through a coding harness, and the
+lead reads the diff against the task and approves it or sends it back. It was opened by one
+GitHub account and approved by another, because an account cannot approve its own pull
+request.
 
-Read the pull request to see what the loop produces. Then **do it yourself, in your own
+Read that pull request to see what the loop produces. Then **do it yourself, in your own
 fork**, and compare.
 
 > **Why a fork, and not this repository?** You do not have push access here, and you never
@@ -70,108 +73,18 @@ To leave the running app: type the password (`parent` by default) and press Ente
 
 ## Running the exercise yourself
 
-You need a Pyrrhula deployment and a model API key. Built and tested against **DeepSeek**.
+The steps live with the sample, in
+**[pyrrhula-samples/tinyfingers-desktop](https://github.com/tuturu742/pyrrhula-samples/tree/main/tinyfingers-desktop)**:
+a `.pyr` bundle carrying the two personas (including the developer's harness selection) and
+a README that starts at "sign up" and ends at a pull request on your fork.
 
-### 1. Fork this repository
+They are kept there rather than repeated here because they are re-checked against a purged
+deployment whenever they change — a second copy would drift from the one that gets tested.
 
-Use the **Fork** button. Everything below points at *your* fork, not at this one.
-
-### 2. Make a GitHub token for the agents
-
-A classic personal access token with the **`repo`** scope, able to push to your fork.
-Pyrrhula seals it with its encryptor; it is never shown again and never reaches the
-container.
-
-> **Two tokens, if you want the review to be real.** GitHub will not let an account
-> approve a pull request it opened itself. Give the repository one account's token (the
-> one that pushes branches and opens PRs) and bind the facilitator persona to a second
-> account's token under **Repos → your repo → Persona credentials**. With one token the
-> reviewer's approval is cosmetic. A second account needs to be a collaborator on your
-> fork first, or its token sees a 404.
-
-### 3. Sign up and choose the workflow
-
-Register with any organization name. Then **Workflows → Software Development** — that is
-the workflow that grants repository access at all.
-
-### 4. Add your model connection
-
-**Personas → Model profiles → New model profile**: a name, provider `deepseek`, a model,
-and your API key.
-
-### 5. Register your fork
-
-**Repos → New repo**:
-
-| Field | Value |
-|---|---|
-| Key | `tinyfingers` |
-| Source URL | `https://github.com/<you>/tinyfingers-desktop` |
-| Access token | the token from step 2 |
-| Runtime | `node20` |
-| Test command | `npm test` |
-
-Pyrrhula clones your fork into its own hosted store. Delegated containers clone *that*
-over a scoped, short-lived token and never talk to GitHub at all; only the platform pushes
-back to your fork.
-
-### 6. Create the cast
-
-**Personas → New persona**, twice:
-
-| | Type | Harness | Notes |
-|---|---|---|---|
-| **Wren** | supervisor | none | frames the work and reviews what comes back |
-| **Pike** | participant | `opencode` | builds it |
-
-The **Harness** dropdown sits beside *Web search* on the persona roster. `none` is the
-default and keeps the one-shot path, where the model answers with whole files and never
-runs anything. Choosing a harness instead gives that persona a real agent loop with a
-shell inside its container — it reads, edits, runs `npm test`, and iterates before
-anything is committed.
-
-> If the dropdown is absent, your deployment serves no harness. If `opencode` is missing
-> from it, an administrator has withheld it for this organization.
-
-### 7. Set a daily cap first
-
-**Usage → Limits**, a per-persona daily token cap. An agent loop is many calls per task,
-and on a cheap model a confused one can spend a great deal before it gives up. The cap
-turns that into a clean "on hold" note instead of a bill.
-
-### 8. Start the session
-
-**New session**:
-
-- **Process definition**: `Plan, Implement, Review, Merge`
-- **Supervisor**: Wren · **Participant**: Pike
-- **Repos**: your fork
-- **Agenda**: the brief below
-
-```
-Build TinyFingers Desktop: a standalone Electron app in the spirit of tinyfingers.net --
-a fullscreen smash toy where every keypress and click paints something, and a toddler
-cannot get out of it by accident.
-
-The reason it is a desktop app at all is that a web page cannot do this: Esc leaves
-fullscreen, / opens quick-find, F11 and Ctrl+W belong to the browser.
-
-What must be true when this is done:
-
-- The keys a browser would act on -- Esc, /, F11, Ctrl+W, Ctrl+R, Alt+Left, function keys
-  -- are swallowed while the app has focus.
-- Leaving the app needs a password. The default is `parent`, configurable.
-- The blocking rules and the password gate are pure functions with unit tests, run by
-  `npm test` with `node --test`. There is no display in the test container, so anything
-  that only works inside a running Electron window cannot be verified and does not count
-  as finished.
-- The README states plainly what this cannot block, and that a documented default
-  password is a speed bump for a toddler, not a security control.
-
-Start with the pure logic and its tests. The Electron shell comes after, and stays thin.
-```
-
----
+In outline: fork this repository, give Pyrrhula a token that can push to your fork, select
+the Software Development workflow, import the bundle, register your fork with runtime
+`node20` and test command `npm test`, and start a session on the *Plan, Implement, Review,
+Merge* flow.
 
 ## What you should see
 
