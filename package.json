@@ -5,6 +5,10 @@
   "description": "A fullscreen smash toy for toddlers, as a desktop app.",
   "license": "MIT",
   "scripts": {
-    "test": "node --test test/"
+    "test": "node --test test/",
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^33.0.0"
   }
 }
