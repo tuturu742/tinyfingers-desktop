@@ -3,9 +3,6 @@
 const canvas = document.getElementById('stage');
 const ctx = canvas.getContext('2d');
 
-let gateBuffer = '';
-let gatePending = false;
-
 function resize() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -29,13 +26,6 @@ function paint(x, y) {
 window.addEventListener('resize', resize);
 
 window.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') {
-    window.tinyFingers.submitPassword(gateBuffer);
-    gateBuffer = '';
-    gatePending = false;
-    return;
-  }
-  gateBuffer += event.key;
   if (event.key.length === 1) {
     paint(Math.random() * canvas.width, Math.random() * canvas.height);
   }

@@ -3,11 +3,14 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('node:path');
 const { shouldBlock } = require('./src/key-blocker.js');
-const { checkPassword } = require('./src/password-gate.js');
+const { PasswordGate } = require('./src/password-gate.js');
 
 const configuredPassword = process.env.TINYFINGERS_PASSWORD;
 
 function createWindow() {
+  const gate = new PasswordGate(configuredPassword);
+  let gatePending = false;
+
   const win = new BrowserWindow({
     fullscreen: true,
     kiosk: true,
@@ -26,8 +29,47 @@ function createWindow() {
   win.setMenuBarVisibility(false);
   win.loadFile('index.html');
 
+  function finish() {
+    gate.clear();
+    gatePending = false;
+    win.close();
+  }
+
   win.webContents.on('before-input-event', (event, input) => {
     if (shouldBlock(input)) {
+      event.preventDefault();
+      return;
+    }
+
+    if (!gatePending) {
+      if (input.control && input.shift && String(input.key).toLowerCase() === 'q') {
+        gatePending = true;
+        gate.clear();
+        event.preventDefault();
+      }
+      return;
+    }
+
+    if (input.key === 'Enter') {
+      event.preventDefault();
+      if (gate.check()) {
+        finish();
+      } else {
+        gate.clear();
+        gatePending = false;
+      }
+      return;
+    }
+
+    if (input.key === 'Escape') {
+      gate.clear();
+      gatePending = false;
+      event.preventDefault();
+      return;
+    }
+
+    if (typeof input.key === 'string' && input.key.length === 1) {
+      gate.append(input.key);
       event.preventDefault();
     }
   });
@@ -36,12 +78,19 @@ function createWindow() {
 }
 
 ipcMain.on('gate:submit', (event, password) => {
-  if (!checkPassword(String(password), configuredPassword)) {
+  const win = BrowserWindow.fromWebContents(event.sender);
+  if (!win) {
     return;
   }
-  const win = BrowserWindow.fromWebContents(event.sender);
-  if (win) {
+  const gate = new PasswordGate(configuredPassword);
+  for (const char of String(password)) {
+    gate.append(char);
+  }
+  if (gate.check()) {
+    gate.clear();
     win.close();
+  } else {
+    gate.clear();
   }
 });
 
